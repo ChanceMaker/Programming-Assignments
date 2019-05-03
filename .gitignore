@@ -1,7 +1,0 @@
-*.exe
-*CMakeLists.txt
-.idea/
-cmake-build-debug/
-MakerEdit/
-MakerEdit/
-tq
