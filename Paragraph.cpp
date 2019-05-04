@@ -77,12 +77,33 @@ std::vector<uniWrd> buildUniHelp(std::vector<std::string> x){
         }
         
     }
-    printUniVect(ans);
-
     return ans;
     
 }
-std::vector<std::string> buildUniqueWordVect(std::string paragraph){
+bool inStrVect(std::vector<std::string> banned,std::string &x){
+    for(auto itr = banned.begin(); itr != banned.end(); itr++){
+        if(*itr == x){
+            return true;
+        }
+    }
+    return false;
+}
+std::string findMostCommonWrd(std::vector<uniWrd> wrdList,std::vector<std::string> banned){
+    std::string mostCommon;
+    int topfreq = 0;
+    for(auto itr = wrdList.begin(); itr != wrdList.end(); itr++){
+        if(!inStrVect(banned,(*itr).wrd)){
+            if((*itr).freq > topfreq){
+                topfreq = (*itr).freq;
+                mostCommon = (*itr).wrd;
+            }
+
+        }
+    }
+    return mostCommon;
+
+}
+std::vector<uniWrd> buildUniqueWordVect(std::string paragraph){
     std::vector<std::string> uniqueWords;
     std::vector<uniWrd> uniqueFreq;
     int cnt = 0;
@@ -104,19 +125,21 @@ std::vector<std::string> buildUniqueWordVect(std::string paragraph){
             wrdBuild = "";
         }
     }
-    buildUniHelp(uniqueWords);
-    return uniqueWords;
+    uniqueFreq = buildUniHelp(uniqueWords);
+    //printUniVect(uniqueFreq);
+    return uniqueFreq;
     
 }
 class Solution {
 public:
-    std::vector<std::string> mostCommonWord(std::string paragraph, std::vector<std::string>& banned) {
+    std::string mostCommonWord(std::string paragraph, std::vector<std::string>& banned) {
         std::string ans;
-        std::vector<std::string> unique;
+        std::vector<uniWrd> unique;
         unique = buildUniqueWordVect(paragraph);
-        
-        
-        return unique;
+
+        ans = findMostCommonWrd(unique,banned);
+        std::cout << "MOST COMMON WORD : "<< ans;
+        return ans;
     }
 };
 int getNumWords(std::string x){
@@ -136,7 +159,6 @@ int main(){
     bannedPara = "still dog happpy sitting";
     bannedParaSize = getNumWords(bannedPara);
     std::string * bannedList;
-    std::cout <<"NUMBER OF WORDS "<< bannedParaSize<< "\n";
     bannedList = new std::string[bannedParaSize];
  
 
