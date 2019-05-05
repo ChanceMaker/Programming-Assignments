@@ -36,20 +36,20 @@ bool inParagraph(std::string paragraph, std::string word){
             buildWord.push_back(paragraph.at(i));
         }else if(paragraph.at(i) == ' ' ){
             paragraphVect.push_back(buildWord);
-            buildWord = "";    
+            buildWord = "";
         }
     }
     for(auto itr = paragraphVect.begin(); itr != paragraphVect.end(); itr++){
         if(*itr == word)
             return true;
-        
+
     }
     return false;
 }
 bool inUniVect(std::vector<uniWrd> x, std::string wrd){
     for(auto itr = x.begin(); itr != x.end(); itr++ ){
         if((*itr).wrd == wrd){
-           return true;
+            return true;
         }
     }
     return false;
@@ -59,9 +59,9 @@ std::vector<uniWrd> buildUniHelp(std::vector<std::string> x){
     int cnt = 0;
     for(auto itr = x.begin(); itr != x.end(); itr++){
         uniWrd var;
-      
+
         std::string y = *itr;
-       
+
         if(!inUniVect(ans,*itr)){
             var.addFreq();
             var.addWrd(*itr);
@@ -75,10 +75,10 @@ std::vector<uniWrd> buildUniHelp(std::vector<std::string> x){
             }
 
         }
-        
+
     }
     return ans;
-    
+
 }
 bool inStrVect(std::vector<std::string> banned,std::string &x){
     for(auto itr = banned.begin(); itr != banned.end(); itr++){
@@ -110,38 +110,55 @@ std::vector<uniWrd> buildUniqueWordVect(std::string paragraph){
     std::string wrdBuild;//building a word to attach throught the unique word std::vector.
     for(int i = 0 ; i < paragraph.size(); ++i){
         if(i == paragraph.size() - 1){//Case for when you hit the last word
-            wrdBuild.push_back(paragraph.at(i));
-            uniqueWords.push_back(wrdBuild);
+            if(isupper(paragraph.at(i))){
+                wrdBuild.push_back((char)(paragraph.at(i) + 32));
+                uniqueWords.push_back(wrdBuild);
+            }else{
+                wrdBuild.push_back(paragraph.at(i));
+                uniqueWords.push_back(wrdBuild);
+            }
+
         }
-        if(paragraph.at(i) != ' ' && paragraph.at(i) != ','&& paragraph.at(i) != '.' ){ 
-            wrdBuild.push_back(paragraph.at(i));
+        if(paragraph.at(i) != ' ' && paragraph.at(i) != ','&& paragraph.at(i) != '.' ){
+            if(isupper(paragraph.at(i))){
+                wrdBuild.push_back((char)(paragraph.at(i) + 32));//converting to lowercase if uppercase
+                paragraph.at(i) = (char)(paragraph.at(i) + 32);//converting paragraph to lowercase itself
+            }else{
+                wrdBuild.push_back(paragraph.at(i));
+            }
+
         }
         else if(paragraph.at(i) == ' ')
         {
             if(inParagraph(paragraph,wrdBuild)){
                 uniqueWords.push_back(wrdBuild);
             }
-                
+
             wrdBuild = "";
         }
     }
     uniqueFreq = buildUniHelp(uniqueWords);
-    //printUniVect(uniqueFreq);
     return uniqueFreq;
-    
+
 }
 class Solution {
 public:
     std::string mostCommonWord(std::string paragraph, std::vector<std::string>& banned) {
         std::string ans;
         std::vector<uniWrd> unique;
+        if(paragraph.at(paragraph.size() - 1) = '.'){
+            paragraph.pop_back();
+        }
+
         unique = buildUniqueWordVect(paragraph);
 
         ans = findMostCommonWrd(unique,banned);
-        std::cout << "MOST COMMON WORD : "<< ans;
+
         return ans;
     }
 };
+
+
 int getNumWords(std::string x){
     int val = 0;
     for(int i = 0 ; i < x.size(); i++){
@@ -155,16 +172,18 @@ int main(){
     Solution ans;
     std::vector<std::string> banned;
     std::string bannedPara;
+    std::string mostCommonWord = "";
     int bannedParaSize = 0;
-    bannedPara = "still dog happpy sitting";
+    bannedPara = "";
     bannedParaSize = getNumWords(bannedPara);
     std::string * bannedList;
     bannedList = new std::string[bannedParaSize];
  
 
-    std::string paragraph = "there can only be one highlander, that there is only one there must be, can you see";
+    std::string paragraph = "a.";
     
-    ans.mostCommonWord(paragraph,banned);
+    mostCommonWord = ans.mostCommonWord(paragraph,banned);
+    std::cout <<" MOST COMMON : "<< mostCommonWord;
     delete  [] bannedList;
     return 0;
 }
